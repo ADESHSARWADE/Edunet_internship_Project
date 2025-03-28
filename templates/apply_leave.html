@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Application Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            background-color: #f1f1f1;
+            color: #333;
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .back-btn:hover {
+            background-color: #e1e1e1;
+        }
+        .back-btn svg {
+            margin-right: 8px;
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 24px;
+        }
+        form {
+            display: grid;
+            grid-gap: 20px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        input, select, textarea {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .date-range {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-gap: 15px;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .cancel {
+            background-color: #e74c3c;
+        }
+        .cancel:hover {
+            background-color: #c0392b;
+        }
+        @media (max-width: 600px) {
+            .container {
+                margin: 0;
+                border-radius: 0;
+            }
+            .date-range {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            
+            <h1>Leave Application Form</h1>
+            <a href="./employee_dashboard" class="back-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 12H5M12 19l-7-7 7-7"></path>
+                </svg>
+                Back to Dashboard
+            </a>
+        </header>
+        
+        <form id="leaveForm">
+            <div class="form-group">
+                <label for="employeeId">Employee ID</label>
+                <input type="text" id="employeeId" name="employeeId" value="{{ session['user_id'] }}" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label for="employeeName">Employee Name</label>
+                <input type="text" id="employeeName" name="employeeName" value="{{ session['user_name'] }}" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label for="department">Department</label>
+                <select id="department" name="department" required>
+                    <option value="">Select Department</option>
+                    <option value="engineering">Engineering</option>
+                    <option value="hr">Human Resources</option>
+                    <option value="finance">Finance</option>
+                    <option value="marketing">Marketing</option>
+                    <option value="operations">Operations</option>
+                    <option value="sales">Sales</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="leaveType">Leave Type</label>
+                <select id="leaveType" name="leaveType" required>
+                    <option value="">Select Leave Type</option>
+                    <option value="annual">Annual Leave</option>
+                    <option value="sick">Sick Leave</option>
+                    <option value="maternity">Maternity/Paternity Leave</option>
+                    <option value="bereavement">Bereavement Leave</option>
+                    <option value="unpaid">Unpaid Leave</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            
+            <div class="form-group date-range">
+                <div>
+                    <label for="startDate">Start Date</label>
+                    <input type="date" id="startDate" name="startDate" required>
+                </div>
+                <div>
+                    <label for="endDate">End Date</label>
+                    <input type="date" id="endDate" name="endDate" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="totalDays">Total Days</label>
+                <input type="number" id="totalDays" name="totalDays" min="0.5" step="0.5" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label for="reason">Reason for Leave</label>
+                <textarea id="reason" name="reason" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="contactInfo">Emergency Contact Information</label>
+                <input type="text" id="contactInfo" name="contactInfo">
+            </div>
+            
+            <div class="buttons">
+                <button type="button" class="cancel" onclick="window.location.href='#'">Cancel</button>
+                <button type="submit">Submit Application</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+            const totalDaysInput = document.getElementById('totalDays');
+            
+            // Calculate working days between two dates (excluding weekends)
+            function calculateWorkingDays(start, end) {
+                let count = 0;
+                let currentDate = new Date(start);
+                const endDate = new Date(end);
+                
+                while (currentDate <= endDate) {
+                    const dayOfWeek = currentDate.getDay();
+                    if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                        count++;
+                    }
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
+                
+                return count;
+            }
+            
+            // Update total days when dates change
+            function updateTotalDays() {
+                const startDate = startDateInput.value;
+                const endDate = endDateInput.value;
+                
+                if (startDate && endDate) {
+                    const days = calculateWorkingDays(startDate, endDate);
+                    totalDaysInput.value = days;
+                } else {
+                    totalDaysInput.value = '';
+                }
+            }
+            
+            startDateInput.addEventListener('change', updateTotalDays);
+            endDateInput.addEventListener('change', updateTotalDays);
+            
+            // Form submission
+            document.getElementById('leaveForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Perform validation
+                const startDate = new Date(startDateInput.value);
+                const endDate = new Date(endDateInput.value);
+                
+                if (endDate < startDate) {
+                    alert('End date cannot be before start date.');
+                    return;
+                }
+                
+                // Here you would typically submit the form data to a server
+                alert('Leave application submitted successfully!');
+                
+                // Redirect to dashboard or confirmation page
+                // window.location.href = 'dashboard.html';
+            });
+        });
+    </script>
+</body>
+</html>

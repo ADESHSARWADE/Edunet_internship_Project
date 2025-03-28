@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechNova - Employee Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #dbeafe;
+            --secondary: #4f46e5;
+            --secondary-light: #e0e7ff;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --warning: #f59e0b;
+            --warning-light: #fef3c7;
+            --danger: #ef4444;
+            --danger-light: #fee2e2;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f9fafb;
+            color: var(--gray-800);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background-color: white;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            overflow-y: auto;
+            z-index: 100;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .profile-section {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        
+        .profile-pic {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary-light);
+            margin: 0 auto 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .profile-pic:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .profile-name {
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+        
+        .profile-designation {
+            color: var(--gray-500);
+            font-size: 14px;
+        }
+        
+        .nav-menu {
+            padding: 15px 0;
+        }
+        
+        .nav-item {
+            list-style: none;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--gray-700);
+            text-decoration: none;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+        
+        .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            overflow-x: hidden;
+            transition: all 0.3s;
+        }
+        
+        .top-bar {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .top-bar-actions {
+            display: flex;
+            align-items: center;
+        }
+        
+        .notification-bell {
+            position: relative;
+            margin-right: 20px;
+            color: var(--gray-600);
+            font-size: 18px;
+            cursor: pointer;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Dashboard Content */
+        .dashboard-content {
+            padding: 25px;
+        }
+        
+        .dashboard-section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .stat-icon {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-right: 15px;
+        }
+        
+        .stat-icon.success {
+            background-color: var(--success-light);
+            color: var(--success);
+        }
+        
+        .stat-icon.warning {
+            background-color: var(--warning-light);
+            color: var(--warning);
+        }
+        
+        .stat-icon.danger {
+            background-color: var(--danger-light);
+            color: var(--danger);
+        }
+        
+        .stat-content {
+            flex: 1;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 992px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .card-actions {
+            display: flex;
+            align-items: center;
+        }
+        
+        .card-btn {
+            background: none;
+            border: none;
+            color: var(--gray-500);
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 15px;
+            transition: color 0.2s;
+        }
+        
+        .card-btn:hover {
+            color: var(--primary);
+        }
+        
+        /* Table Styles */
+        .table-responsive {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead th {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-200);
+            color: var(--gray-600);
+            font-weight: 600;
+            background-color: var(--gray-100);
+        }
+        
+        tbody td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tbody tr:hover {
+            background-color: var(--gray-100);
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-badge.present {
+            background-color: var(--success-light);
+            color: var(--success);
+        }
+        
+        .status-badge.absent {
+            background-color: var(--danger-light);
+            color: var(--danger);
+        }
+        
+        .status-badge.late {
+            background-color: var(--warning-light);
+            color: var(--warning);
+        }
+        
+        .status-badge.pending {
+            background-color: var(--gray-200);
+            color: var(--gray-600);
+        }
+        
+        .status-badge.approved {
+            background-color: var(--success-light);
+            color: var(--success);
+        }
+        
+        .status-badge.rejected {
+            background-color: var(--danger-light);
+            color: var(--danger);
+        }
+        
+        /* Action buttons */
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--gray-300);
+            color: var(--gray-700);
+        }
+        
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        /* Apply Leave Form */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        /* Profile Edit Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--gray-500);
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        /* Tab System */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--gray-200);
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            color: var(--gray-500);
+            transition: all 0.2s;
+        }
+        
+        .tab.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 220px;
+            }
+            
+            .main-content {
+                margin-left: 220px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 0;
+                padding-top: 60px;
+            }
+            
+            .sidebar.open {
+                width: 260px;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .mobile-toggle {
+                display: block;
+                position: fixed;
+                top: 15px;
+                left: 15px;
+                z-index: 200;
+            }
+            
+            .top-bar {
+                padding-left: 60px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-toggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+    
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">TechNova</div>
+        </div>
+        
+        <div class="profile-section">
+            <img src="data:image/jpeg;base64,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" alt="Profile Picture" class="profile-pic" onclick="openProfileModal()">
+            
+            
+            <div class="profile-name"> {{ user_name}}</div>
+            <div class="profile-designation">{{ designation}}</div>
+            
+
+            <a href="{{ url_for('profile') }}" class="btn btn-outline">View Profile</a>
+            <a href="{{ url_for('edit_profile') }}" class="btn btn-outline">Edit Profile</a>
+        </div>
+        
+        
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="#" class="nav-link active" onclick="showTab('dashboard')">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="./attendance" class="nav-link" onclick="showTab('attendance')">
+                    <i class="fas fa-calendar-check"></i> Attendance
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="./apply_leave" class="nav-link" onclick="showTab('leave')">
+                    <i class="fas fa-calendar-minus"></i> Apply Leave
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" onclick="showTab('reports')">
+                    <i class="fas fa-file-alt"></i> Reports
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" onclick="showTab('projects')">
+                    <i class="fas fa-project-diagram"></i> Projects
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" onclick="showTab('team')">
+                    <i class="fas fa-users"></i> Team
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" onclick="showTab('payroll')">
+                    <i class="fas fa-money-bill-wave"></i> Payroll
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" onclick="showTab('settings')">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('logout') }}" class="nav-link">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+    
+    
+    <!-- Main Content -->
+    <div class="main-content" id="main-content">
+        <div class="top-bar">
+            <div class="page-title">Welcome  {{ user_name }}  , at TechNova</div>
+            <div class="top-bar-actions">
+                <div class="notification-bell">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </div>
+                <button class="action-btn btn-outline" onclick="openProfileModal()">
+                    <i class="fas fa-user"></i> My Profile
+                </button>
+            </div>
+        </div>
+        
+        <!-- Dashboard Tab -->
+        <div class="dashboard-content tab-content active" id="dashboard-tab">
+            <div class="dashboard-section">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value">23</div>
+                            <div class="stat-label">Present Days</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon success">
+                            <i class="fas fa-calendar-minus"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value">7</div>
+                            <div class="stat-label">Leave Days Used</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon warning">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value">3</div>
+                            <div class="stat-label">Active Projects</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon danger">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value">12</div>
+                            <div class="stat-label">Pending Tasks</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dashboard-section">
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Recent Attendance</div>
+                            <div class="card-actions">
+                                <button class="card-btn"><i class="fas fa-sync-alt"></i></button>
+                                <button class="card-btn"><i class="fas fa-ellipsis-v"></i></button>
+                            </div>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Check In</th>
+                                        <th>Check Out</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Mar 20, 2025</td>
+                                        <td>09:02 AM</td>
+                                        <td>06:05 PM</td>
+                                        <td><span class="status-badge present">Present</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Mar 19, 2025</td>
+                                        <td>09:15 AM</td>
+                                        <td>06:30 PM</td>
+                                        <td><span class="status-badge late">Late</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Mar 18, 2025</td>
+                                        <td>08:55 AM</td>
+                                        <td>05:58 PM</td>
+                                        <td><span class="status-badge present">Present</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Mar 17, 2025</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td><span class="status-badge absent">Absent</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Mar 16, 2025</td>
+                                        <td>08:58 AM</td>
+                                        <td>06:10 PM</td>
+                                        <td><span class="status-badge present">Present</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Recent Leaves</div>
+                            <div class="card-actions">
+                                <button class="card-btn"><i class="fas fa-sync-alt"></i></button>
+                            </div>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Sick Leave</td>
+                                        <td>Mar 17, 2025</td>
+                                        <td><span class="status-badge approved">Approved</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Personal Leave</td>
+                                        <td>Feb 28, 2025</td>
+                                        <td><span class="status-badge approved">Approved</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Vacation</td>
+                                        <td>Jan 10-12, 2025</td>
+                                        <td><span class="status-badge approved">Approved</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dashboard-section">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Current Projects</div>
+                        <div class="card-actions">
+                            <button class="card-btn"><i class="fas fa-sync-alt"></i></button>
+                            <button class="card-btn"><i class="fas fa-ellipsis-v"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Project Name</th>
+                                    <th>Team</th>
+                                    <th>Deadline</th>
+                                    <th>Progress</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Mobile App Redesign</td>
+                                    <td>UI/UX Team</td>
+                                    <td>Apr 15, 2025</td>
+                                    <td>75%</td>
+                                    <td><span class="status-badge present">On Track</span></td>
+                                </tr>
+                                <tr>
+                                    <td>API Integration</td>
+                                    <td>Backend Team</td>
+                                    <td>Apr 30, 2025</td>
+                                    <td>45%</td>
+                                    <td><span class="status-badge present">On Track</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Cloud Migration</td>
+                                    <td>DevOps Team</td>
+                                    <td>May 10, 2025</td>
+                                    <td>30%</td>
+                                    <td><span class="status-badge warning">At Risk</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Attendance Tab -->
+        <div class="dashboard-content tab-content" id="attendance-tab">
+            <div class="dashboard-section">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Attendance History</div>
+                        <div class="card-actions">
+                            <button class="action-btn btn-primary">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Day</th>
+                                    <th>Check In</th>
+                                    <th>Check Out</th>
+                                    <th>Working Hours</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Mar 20, 2025</td>
+                                    <td>Monday</td>
+                                    <td>09:02 AM</td>
+                                    <td>06:05 PM</td>
+                                    <td>9h 3m</td>
+                                    <td><span class="status-badge present">Present</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Mar 19, 2025</td>
+                                    <td>Sunday</td>
+                                    <td>09:15 AM</td>
+                                    <td>06:30 PM</td>
+                                    <td>9h 15m</td>
+                                    <td><span class="status-badge late">Late</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Mar 18, 2025</td>
+                                    <td>Saturday</td>
+                                    <td>08:55 AM</td>
+                                    <td>05:58 PM</td>
+                                    <td>9h 3m</td>
+                                    <td><span class="status-badge present">Present</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Mar 17, 2025</td>
+                                    <td>Friday</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td><span class="status-badge absent">Absent</span></td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    
+    </div>
+</body>
+                            
